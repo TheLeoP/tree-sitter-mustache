@@ -1,0 +1,37 @@
+{
+  "grammars": [
+    {
+      "name": "mustache",
+      "camelcase": "Mustache",
+      "scope": "source.mustache",
+      "path": ".",
+      "file-types": [
+        ".mustache"
+      ],
+      "injection-regex": "^mustache$"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Mustache grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "TheLeoP",
+        "email": "eugenio0523@gmail.com"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-mustache"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
+

@@ -1,0 +1,23 @@
+========
+Comments
+========
+
+{{!Comment}}
+
+---
+
+(template
+  (comment_statement))
+
+========
+Multiline comments
+========
+
+{{!
+Multiline
+Comment}}
+
+---
+
+(template
+  (comment_statement))

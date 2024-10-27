@@ -1,0 +1,105 @@
+========
+Section simple
+========
+
+{{#name}}{{/name}}
+
+---
+
+(template
+  (section
+    (section_begin
+      (tag_name))
+    (section_end
+      (tag_name))))
+
+========
+Section identifier
+========
+
+{{#name}}{{first}}{{/name}}
+
+---
+
+(template
+  (section
+    (section_begin
+      (tag_name))
+    (interpolation_statement
+      (identifier))
+    (section_end
+      (tag_name))))
+
+========
+Section erroneous end tag
+========
+
+{{#name}}
+{{first}}
+{{/other}}
+
+---
+
+(template
+  (section
+    (section_begin
+      (tag_name))
+    (interpolation_statement
+      (identifier))
+    (section_end
+      (erroneous_tag_name))))
+
+========
+Nested sections
+========
+
+{{#a}}
+{{one}}
+{{#b}}
+{{#c}}
+{{three}}
+{{/c}}
+{{two}}
+{{/b}}
+{{/a}}
+
+---
+
+(template
+  (section
+    (section_begin
+      (tag_name))
+    (interpolation_statement
+      (identifier))
+    (section
+      (section_begin
+        (tag_name))
+      (section
+        (section_begin
+          (tag_name))
+        (interpolation_statement
+          (identifier))
+        (section_end
+          (tag_name)))
+      (interpolation_statement
+        (identifier))
+      (section_end
+        (tag_name)))
+    (section_end
+      (tag_name))))
+
+
+========
+Inverted section
+========
+
+{{^name}}{{/name}}
+
+---
+
+(template
+  (inverted_section
+    (inverted_section_begin
+      (tag_name))
+    (inverted_section_end
+      (tag_name))))

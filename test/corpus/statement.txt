@@ -1,0 +1,60 @@
+========
+Simple statement
+========
+
+{{name}}
+
+---
+
+(template
+  (interpolation_statement
+    (identifier)))
+
+========
+Triple statement
+========
+
+{{{name}}}
+
+---
+
+(template
+  (triple_statement
+    (identifier)))
+
+========
+Ampersand statement
+========
+
+{{&name}}
+
+---
+
+(template
+  (ampersand_statement
+    (identifier)))
+
+========
+Path statement
+========
+
+{{name.first}}
+
+---
+
+(template
+  (interpolation_statement
+    (path_expression
+      (identifier)
+      (identifier))))
+
+========
+Dot statement
+========
+
+{{.}}
+
+---
+
+(template
+  (interpolation_statement))

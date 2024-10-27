@@ -1,0 +1,32 @@
+========
+Single set delimiter
+========
+
+{{=<% %>=}}
+<%text%>
+
+---
+
+(template
+  (set_delimiter_statement)
+  (interpolation_statement
+    (identifier)))
+
+========
+Double set delimiter
+========
+
+{{=<% %>=}}
+<%text%>
+<%={{ }}=%>
+{{text}}
+
+---
+
+(template
+  (set_delimiter_statement)
+  (interpolation_statement
+    (identifier))
+  (set_delimiter_statement)
+  (interpolation_statement
+    (identifier)))
