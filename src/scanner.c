@@ -64,7 +64,7 @@ static int get_delimiter(String delimiter, int i, char def) {
 static String scan_tag_name(Scanner *scanner, TSLexer *lexer) {
   String tag_name = array_new();
   char first = get_delimiter(scanner->end_delimiter, 0, '}');
-  while (lexer->lookahead != first) {
+  while (lexer->lookahead != first && !lexer->eof(lexer)) {
     array_push(&tag_name, lexer->lookahead);
     lexer->advance(lexer, false);
   }
@@ -260,6 +260,8 @@ static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
 static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
   int first = get_delimiter(scanner->end_delimiter, 0, '}');
   while (lexer->lookahead != first) {
+    if (lexer->eof(lexer))
+      return false;
     lexer->advance(lexer, false);
   }
   lexer->result_symbol = COMMENT_CONTENT;
@@ -278,6 +280,8 @@ static bool scan_identifier_content(Scanner *scanner, TSLexer *lexer) {
   }
   lexer->advance(lexer, false);
   while (lexer->lookahead != first_end && lexer->lookahead != '.') {
+    if (lexer->eof(lexer))
+      return false;
     lexer->advance(lexer, false);
   }
   lexer->result_symbol = IDENTIFIER_CONTENT;
@@ -287,14 +291,14 @@ static bool scan_identifier_content(Scanner *scanner, TSLexer *lexer) {
 static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
   String content = array_new();
   while (!iswspace(lexer->lookahead)) {
-    if (lexer->lookahead == '=') {
+    if (lexer->lookahead == '=' || lexer->eof(lexer)) {
       array_delete(&content);
       return false;
     }
     array_push(&content, lexer->lookahead);
     lexer->advance(lexer, false);
   }
-  if (content.size == 0) {
+  if (content.size == 0 || lexer->eof(lexer)) {
     array_delete(&content);
     return false;
   }
@@ -307,6 +311,8 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
 static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
   String content = array_new();
   while (lexer->lookahead != '=') {
+    if (lexer->eof(lexer))
+      return false;
     array_push(&content, lexer->lookahead);
     lexer->advance(lexer, false);
   }
@@ -343,8 +349,11 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
   if (first_start == lexer->lookahead || first_end == lexer->lookahead) {
     return false;
   }
-  while (first_start != lexer->lookahead && first_end != lexer->lookahead) {
+  while (lexer->lookahead != first_start && lexer->lookahead != first_end) {
     lexer->advance(lexer, false);
+    if (lexer->eof(lexer)) {
+      break;
+    }
   }
   lexer->result_symbol = TEXT;
   return true;
@@ -356,10 +365,13 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     lexer->advance(lexer, true);
   }
 
-  if (valid_symbols[START_DELIMITER]) {
+  int first_start = get_delimiter(scanner->start_delimiter, 0, '{');
+  int first_end = get_delimiter(scanner->end_delimiter, 0, '}');
+
+  if (valid_symbols[START_DELIMITER] && lexer->lookahead == first_start) {
     return scan_start_delimiter(scanner, lexer);
   }
-  if (valid_symbols[END_DELIMITER]) {
+  if (valid_symbols[END_DELIMITER] && lexer->lookahead == first_end) {
     return scan_end_delimiter(scanner, lexer);
   }
   if (valid_symbols[COMMENT_CONTENT]) {
@@ -378,7 +390,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     return scan_old_end_delimiter(scanner, lexer);
   }
 
-  if (valid_symbols[TEXT]) {
+  if (valid_symbols[TEXT] && lexer->lookahead != '\0') {
     return scan_text(scanner, lexer);
   }
 

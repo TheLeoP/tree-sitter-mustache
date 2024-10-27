@@ -1,0 +1,13 @@
+========
+Simple text
+========
+
+Hello {{name}}!
+
+---
+
+(template
+  (text)
+  (interpolation_statement
+    (identifier))
+  (text))
