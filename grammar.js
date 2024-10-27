@@ -1,6 +1,6 @@
 /**
  * @file Mustache grammar for tree-sitter
- * @author TheLeoP <eugenio0523@gmail.com>
+ * @author Luis Calle <eugenio0523@gmail.com>
  * @license MIT
  */
 
