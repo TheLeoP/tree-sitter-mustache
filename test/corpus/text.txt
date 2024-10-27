@@ -11,3 +11,31 @@ Hello {{name}}!
   (interpolation_statement
     (identifier))
   (text))
+
+========
+Long text
+========
+
+Hello {{name}}!
+This is a complicated {{template}}
+{{#section}}
+Some text
+{{/section}}
+End
+
+---
+
+(template
+  (text)
+  (interpolation_statement
+    (identifier))
+  (text)
+  (interpolation_statement
+    (identifier))
+  (section
+    (section_begin
+      (tag_name))
+    (text)
+    (section_end
+      (tag_name)))
+  (text))
