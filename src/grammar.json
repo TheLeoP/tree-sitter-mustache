@@ -26,8 +26,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "start_delimiter"
+          },
+          "named": true,
+          "value": "_start_delimiter"
         },
         {
           "type": "STRING",
@@ -38,8 +43,13 @@
           "name": "_comment_content"
         },
         {
-          "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "end_delimiter"
+          },
+          "named": true,
+          "value": "_end_delimiter"
         }
       ]
     },
@@ -81,7 +91,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "SYMBOL",
@@ -89,7 +99,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -98,7 +108,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -114,7 +124,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -123,7 +133,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -135,7 +145,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -144,7 +154,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -152,7 +162,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_set_start_delimiter_content"
+          "name": "_setstart_delimiter_content"
         },
         {
           "type": "PATTERN",
@@ -167,8 +177,13 @@
           "value": "="
         },
         {
-          "type": "SYMBOL",
-          "name": "_old_end_delimiter"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_old_end_delimiter"
+          },
+          "named": true,
+          "value": "end_delimiter"
         }
       ]
     },
@@ -202,7 +217,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -233,7 +248,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -242,7 +257,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -259,7 +274,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -293,7 +308,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_delimiter"
+          "name": "start_delimiter"
         },
         {
           "type": "STRING",
@@ -310,7 +325,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_end_delimiter"
+          "name": "end_delimiter"
         }
       ]
     },
@@ -384,11 +399,11 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_start_delimiter"
+      "name": "start_delimiter"
     },
     {
       "type": "SYMBOL",
-      "name": "_end_delimiter"
+      "name": "end_delimiter"
     },
     {
       "type": "SYMBOL",
@@ -400,7 +415,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_set_start_delimiter_content"
+      "name": "_setstart_delimiter_content"
     },
     {
       "type": "SYMBOL",

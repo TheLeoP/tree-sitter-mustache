@@ -4,15 +4,23 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
-      "required": false,
+      "multiple": true,
+      "required": true,
       "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
         },
         {
           "type": "path_expression",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
           "named": true
         }
       ]
@@ -21,7 +29,21 @@
   {
     "type": "comment_statement",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_end_delimiter",
+          "named": true
+        },
+        {
+          "type": "_start_delimiter",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "identifier",
@@ -33,15 +55,23 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
-      "required": false,
+      "multiple": true,
+      "required": true,
       "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
         },
         {
           "type": "path_expression",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
           "named": true
         }
       ]
@@ -99,9 +129,17 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
+          "named": true
+        },
         {
           "type": "tag_name",
           "named": true
@@ -114,11 +152,19 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
           "type": "erroneous_tag_name",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
           "named": true
         },
         {
@@ -195,9 +241,17 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
+          "named": true
+        },
         {
           "type": "tag_name",
           "named": true
@@ -210,11 +264,19 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
           "type": "erroneous_tag_name",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
           "named": true
         },
         {
@@ -227,7 +289,21 @@
   {
     "type": "set_delimiter_statement",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "template",
@@ -278,15 +354,23 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
-      "required": false,
+      "multiple": true,
+      "required": true,
       "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
         },
         {
           "type": "path_expression",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
           "named": true
         }
       ]
@@ -321,7 +405,23 @@
     "named": false
   },
   {
+    "type": "_end_delimiter",
+    "named": true
+  },
+  {
+    "type": "_start_delimiter",
+    "named": true
+  },
+  {
+    "type": "end_delimiter",
+    "named": true
+  },
+  {
     "type": "erroneous_tag_name",
+    "named": true
+  },
+  {
+    "type": "start_delimiter",
     "named": true
   },
   {
