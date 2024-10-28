@@ -302,6 +302,9 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
     return false;
   }
 
+  if (scanner->start_delimiter.size > 0) {
+    array_delete(&scanner->start_delimiter);
+  }
   scanner->start_delimiter = content;
   lexer->result_symbol = SET_START_DELIMITER_CONTENT;
   return true;
@@ -322,6 +325,9 @@ static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
     return false;
   }
 
+  if (scanner->old_end_delimiter.size > 0) {
+    array_delete(&scanner->old_end_delimiter);
+  }
   scanner->old_end_delimiter = scanner->end_delimiter;
   scanner->end_delimiter = content;
   lexer->result_symbol = SET_END_DELIMITER_CONTENT;
