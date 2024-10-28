@@ -3,6 +3,7 @@
 #include "tree_sitter/array.h"
 #include "tree_sitter/parser.h"
 
+#include <stdint.h>
 #include <wctype.h>
 enum TokenType {
   START_TAG_NAME,
@@ -59,7 +60,7 @@ static void pop_tag(Scanner *scanner) {
   tag_free(&popped_tag);
 }
 
-static int get_delimiter(String delimiter, int i, char def) {
+static int get_delimiter(String delimiter, uint32_t i, char def) {
   if (delimiter.size >= i + 1)
     return *array_get(&delimiter, i);
   return def;
@@ -309,8 +310,10 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
 static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
   String content = array_new();
   while (lexer->lookahead != '=') {
-    if (lexer->eof(lexer))
+    if (lexer->eof(lexer)) {
+      array_delete(&content);
       return false;
+    }
     array_push(&content, lexer->lookahead);
     lexer->advance(lexer, false);
   }
