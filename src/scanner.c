@@ -428,6 +428,7 @@ void tree_sitter_mustache_external_scanner_destroy(void *payload) {
   array_delete(&scanner->tags);
   array_delete(&scanner->start_delimiter);
   array_delete(&scanner->end_delimiter);
+  array_delete(&scanner->old_end_delimiter);
   ts_free(scanner);
 }
 
