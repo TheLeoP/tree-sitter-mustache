@@ -9,7 +9,9 @@ Hello {{name}}!
 (template
   (text)
   (interpolation_statement
-    (identifier))
+    (start_delimiter)
+    (identifier)
+    (end_delimiter))
   (text))
 
 ========
@@ -28,14 +30,22 @@ End
 (template
   (text)
   (interpolation_statement
-    (identifier))
+    (start_delimiter)
+    (identifier)
+    (end_delimiter))
   (text)
   (interpolation_statement
-    (identifier))
+    (start_delimiter)
+    (identifier)
+    (end_delimiter))
   (section
     (section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (text)
     (section_end
-      (tag_name)))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter)))
   (text))

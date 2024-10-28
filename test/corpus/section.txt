@@ -9,9 +9,13 @@ Section simple
 (template
   (section
     (section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (section_end
-      (tag_name))))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))))
 
 ========
 Section identifier
@@ -24,11 +28,17 @@ Section identifier
 (template
   (section
     (section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (interpolation_statement
-      (identifier))
+      (start_delimiter)
+      (identifier)
+      (end_delimiter))
     (section_end
-      (tag_name))))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))))
 
 ========
 Section erroneous end tag
@@ -43,11 +53,17 @@ Section erroneous end tag
 (template
   (section
     (section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (interpolation_statement
-      (identifier))
+      (start_delimiter)
+      (identifier)
+      (end_delimiter))
     (section_end
-      (erroneous_tag_name))))
+      (start_delimiter)
+      (erroneous_tag_name)
+      (end_delimiter))))
 
 ========
 Nested sections
@@ -68,25 +84,43 @@ Nested sections
 (template
   (section
     (section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (interpolation_statement
-      (identifier))
+      (start_delimiter)
+      (identifier)
+      (end_delimiter))
     (section
       (section_begin
-        (tag_name))
+        (start_delimiter)
+        (tag_name)
+        (end_delimiter))
       (section
         (section_begin
-          (tag_name))
+          (start_delimiter)
+          (tag_name)
+          (end_delimiter))
         (interpolation_statement
-          (identifier))
+          (start_delimiter)
+          (identifier)
+          (end_delimiter))
         (section_end
-          (tag_name)))
+          (start_delimiter)
+          (tag_name)
+          (end_delimiter)))
       (interpolation_statement
-        (identifier))
+        (start_delimiter)
+        (identifier)
+        (end_delimiter))
       (section_end
-        (tag_name)))
+        (start_delimiter)
+        (tag_name)
+        (end_delimiter)))
     (section_end
-      (tag_name))))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))))
 
 
 ========
@@ -100,6 +134,10 @@ Inverted section
 (template
   (inverted_section
     (inverted_section_begin
-      (tag_name))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))
     (inverted_section_end
-      (tag_name))))
+      (start_delimiter)
+      (tag_name)
+      (end_delimiter))))

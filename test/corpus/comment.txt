@@ -7,7 +7,9 @@ Comments
 ---
 
 (template
-  (comment_statement))
+  (comment_statement
+    (_start_delimiter)
+    (_end_delimiter)))
 
 ========
 Multiline comments
@@ -20,4 +22,6 @@ Comment}}
 ---
 
 (template
-  (comment_statement))
+  (comment_statement
+    (_start_delimiter)
+    (_end_delimiter)))

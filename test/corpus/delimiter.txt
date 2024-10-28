@@ -8,9 +8,13 @@ Single set delimiter
 ---
 
 (template
-  (set_delimiter_statement)
+  (set_delimiter_statement
+    (start_delimiter)
+    (end_delimiter))
   (interpolation_statement
-    (identifier)))
+    (start_delimiter)
+    (identifier)
+    (end_delimiter)))
 
 ========
 Double set delimiter
@@ -24,9 +28,17 @@ Double set delimiter
 ---
 
 (template
-  (set_delimiter_statement)
+  (set_delimiter_statement
+    (start_delimiter)
+    (end_delimiter))
   (interpolation_statement
-    (identifier))
-  (set_delimiter_statement)
+    (start_delimiter)
+    (identifier)
+    (end_delimiter))
+  (set_delimiter_statement
+    (start_delimiter)
+    (end_delimiter))
   (interpolation_statement
-    (identifier)))
+    (start_delimiter)
+    (identifier)
+    (end_delimiter)))
