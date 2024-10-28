@@ -1,5 +1,5 @@
 ========
-Single set delimiter
+Two chars set delimiter
 ========
 
 {{=<% %>=}}
@@ -35,6 +35,42 @@ Double set delimiter
     (start_delimiter)
     (identifier)
     (end_delimiter))
+  (set_delimiter_statement
+    (start_delimiter)
+    (end_delimiter))
+  (interpolation_statement
+    (start_delimiter)
+    (identifier)
+    (end_delimiter)))
+
+========
+One char set delimiter
+========
+
+{{=< >=}}
+<text>
+
+---
+
+(template
+  (set_delimiter_statement
+    (start_delimiter)
+    (end_delimiter))
+  (interpolation_statement
+    (start_delimiter)
+    (identifier)
+    (end_delimiter)))
+
+========
+Three chars set delimiter
+========
+
+{{=<_< >_>=}}
+<_<text>_>
+
+---
+
+(template
   (set_delimiter_statement
     (start_delimiter)
     (end_delimiter))

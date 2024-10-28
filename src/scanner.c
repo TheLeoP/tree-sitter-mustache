@@ -18,6 +18,10 @@ enum TokenType {
   TEXT,
 };
 
+#define DEFAULT_START_DELIMITER '{'
+#define DEFAULT_END_DELIMITER '}'
+#define DEFAULT_SIZE 2
+
 typedef Array(char) String;
 
 typedef struct {
@@ -63,7 +67,7 @@ static int get_delimiter(String delimiter, int i, char def) {
 
 static String scan_tag_name(Scanner *scanner, TSLexer *lexer) {
   String tag_name = array_new();
-  char first = get_delimiter(scanner->end_delimiter, 0, '}');
+  char first = get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
   while (lexer->lookahead != first && !lexer->eof(lexer)) {
     array_push(&tag_name, lexer->lookahead);
     lexer->advance(lexer, false);
@@ -225,40 +229,41 @@ static bool scan_end_tag_name(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_start_delimiter(Scanner *scanner, TSLexer *lexer) {
-  /* TODO: use i instead of fixed numbers in all calls to this function */
-  int first = get_delimiter(scanner->start_delimiter, 0, '{');
-  if (first != lexer->lookahead) {
-    return false;
+  int start_delimiter_max = scanner->start_delimiter.size == 0
+                                ? DEFAULT_SIZE
+                                : scanner->start_delimiter.size;
+  for (int i = 0; i < start_delimiter_max; i++) {
+    int current_delimiter =
+        get_delimiter(scanner->start_delimiter, i, DEFAULT_START_DELIMITER);
+    if (lexer->lookahead != current_delimiter) {
+      return false;
+    }
+    lexer->advance(lexer, false);
   }
-  lexer->advance(lexer, false);
-  int second = get_delimiter(scanner->start_delimiter, 1, '{');
-  if (second != lexer->lookahead) {
-    return false;
-  }
-  lexer->advance(lexer, false);
 
   lexer->result_symbol = START_DELIMITER;
   return true;
 }
 
 static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
-  int first = get_delimiter(scanner->end_delimiter, 0, '}');
-  if (first != lexer->lookahead) {
-    return false;
+  int end_delimiter_max = scanner->end_delimiter.size == 0
+                              ? DEFAULT_SIZE
+                              : scanner->end_delimiter.size;
+  for (int i = 0; i < end_delimiter_max; i++) {
+    int current_delimiter =
+        get_delimiter(scanner->end_delimiter, i, DEFAULT_END_DELIMITER);
+    if (lexer->lookahead != current_delimiter) {
+      return false;
+    }
+    lexer->advance(lexer, false);
   }
-  lexer->advance(lexer, false);
-  int second = get_delimiter(scanner->end_delimiter, 1, '}');
-  if (second != lexer->lookahead) {
-    return false;
-  }
-  lexer->advance(lexer, false);
 
   lexer->result_symbol = END_DELIMITER;
   return true;
 }
 
 static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
-  int first = get_delimiter(scanner->end_delimiter, 0, '}');
+  int first = get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
   while (lexer->lookahead != first) {
     if (lexer->eof(lexer))
       return false;
@@ -269,7 +274,8 @@ static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_identifier_content(Scanner *scanner, TSLexer *lexer) {
-  int first_end = get_delimiter(scanner->end_delimiter, 0, '}');
+  int first_end =
+      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
   lexer->advance(lexer, false);
   while (lexer->lookahead != first_end && lexer->lookahead != '.') {
     if (lexer->eof(lexer))
@@ -320,27 +326,27 @@ static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_old_end_delimiter(Scanner *scanner, TSLexer *lexer) {
-  int first = get_delimiter(scanner->old_end_delimiter, 0, '}');
-  if (first != lexer->lookahead) {
-    return false;
+  int old_end_delimiter_max = scanner->old_end_delimiter.size == 0
+                                  ? DEFAULT_SIZE
+                                  : scanner->old_end_delimiter.size;
+  for (int i = 0; i < old_end_delimiter_max; i++) {
+    int current_delimiter =
+        get_delimiter(scanner->old_end_delimiter, i, DEFAULT_END_DELIMITER);
+    if (lexer->lookahead != current_delimiter) {
+      return false;
+    }
+    lexer->advance(lexer, false);
   }
-  lexer->advance(lexer, false);
-  int second = get_delimiter(scanner->old_end_delimiter, 1, '}');
-  if (second != lexer->lookahead) {
-    return false;
-  }
-  lexer->advance(lexer, false);
 
   lexer->result_symbol = OLD_END_DELIMITER;
   return true;
 }
 
 static bool scan_text(Scanner *scanner, TSLexer *lexer) {
-  int first_start = get_delimiter(scanner->start_delimiter, 0, '{');
-  int first_end = get_delimiter(scanner->end_delimiter, 0, '}');
-  if (first_start == lexer->lookahead || first_end == lexer->lookahead) {
-    return false;
-  }
+  int first_start =
+      get_delimiter(scanner->start_delimiter, 0, DEFAULT_START_DELIMITER);
+  int first_end =
+      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
   while (lexer->lookahead != first_start && lexer->lookahead != first_end) {
     lexer->advance(lexer, false);
     if (lexer->eof(lexer)) {
@@ -357,8 +363,10 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     lexer->advance(lexer, true);
   }
 
-  int first_start = get_delimiter(scanner->start_delimiter, 0, '{');
-  int first_end = get_delimiter(scanner->end_delimiter, 0, '}');
+  int first_start =
+      get_delimiter(scanner->start_delimiter, 0, DEFAULT_START_DELIMITER);
+  int first_end =
+      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
 
   if (valid_symbols[START_DELIMITER] && lexer->lookahead == first_start) {
     return scan_start_delimiter(scanner, lexer);
@@ -387,7 +395,8 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     return scan_old_end_delimiter(scanner, lexer);
   }
 
-  if (valid_symbols[TEXT] && lexer->lookahead != '\0') {
+  if (valid_symbols[TEXT] && !lexer->eof(lexer) &&
+      lexer->lookahead != first_start && lexer->lookahead != first_end) {
     return scan_text(scanner, lexer);
   }
 
