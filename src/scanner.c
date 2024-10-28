@@ -269,15 +269,7 @@ static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_identifier_content(Scanner *scanner, TSLexer *lexer) {
-  int first_start = get_delimiter(scanner->start_delimiter, 0, '{');
   int first_end = get_delimiter(scanner->end_delimiter, 0, '}');
-  if (lexer->lookahead == first_start || lexer->lookahead == first_end ||
-      lexer->lookahead == '&' || lexer->lookahead == '^' ||
-      lexer->lookahead == '=' || lexer->lookahead == '/' ||
-      lexer->lookahead == '!' || lexer->lookahead == '#' ||
-      lexer->lookahead == '.') {
-    return false;
-  }
   lexer->advance(lexer, false);
   while (lexer->lookahead != first_end && lexer->lookahead != '.') {
     if (lexer->eof(lexer))
@@ -377,7 +369,12 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
   if (valid_symbols[COMMENT_CONTENT]) {
     return scan_comment_content(scanner, lexer);
   }
-  if (valid_symbols[IDENTIFIER_CONTENT]) {
+  if (valid_symbols[IDENTIFIER_CONTENT] && lexer->lookahead != first_start &&
+      lexer->lookahead != first_end && lexer->lookahead != '&' &&
+      lexer->lookahead != '^' && lexer->lookahead != '=' &&
+      lexer->lookahead != '/' && lexer->lookahead != '!' &&
+      lexer->lookahead != '#' && lexer->lookahead != '.' &&
+      lexer->lookahead != '>') {
     return scan_identifier_content(scanner, lexer);
   }
   if (valid_symbols[SET_START_DELIMITER_CONTENT]) {

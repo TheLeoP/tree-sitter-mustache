@@ -1,0 +1,13 @@
+========
+Simple partial
+========
+
+{{>text}}
+
+---
+
+(template
+  (partial_statement
+    (start_delimiter)
+    (partial_content)
+    (end_delimiter)))

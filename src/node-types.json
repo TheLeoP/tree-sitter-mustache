@@ -106,6 +106,10 @@
           "named": true
         },
         {
+          "type": "partial_statement",
+          "named": true
+        },
+        {
           "type": "section",
           "named": true
         },
@@ -175,6 +179,29 @@
     }
   },
   {
+    "type": "partial_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "end_delimiter",
+          "named": true
+        },
+        {
+          "type": "partial_content",
+          "named": true
+        },
+        {
+          "type": "start_delimiter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "path_expression",
     "named": true,
     "fields": {},
@@ -207,6 +234,10 @@
         },
         {
           "type": "inverted_section",
+          "named": true
+        },
+        {
+          "type": "partial_statement",
           "named": true
         },
         {
@@ -331,6 +362,10 @@
           "named": true
         },
         {
+          "type": "partial_statement",
+          "named": true
+        },
+        {
           "type": "section",
           "named": true
         },
@@ -401,6 +436,10 @@
     "named": false
   },
   {
+    "type": ">",
+    "named": false
+  },
+  {
     "type": "^",
     "named": false
   },
@@ -418,6 +457,10 @@
   },
   {
     "type": "erroneous_tag_name",
+    "named": true
+  },
+  {
+    "type": "partial_content",
     "named": true
   },
   {

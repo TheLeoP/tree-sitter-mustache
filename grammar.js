@@ -18,7 +18,7 @@ module.exports = grammar({
     $.end_delimiter,
     $._comment_content,
     $._identifier_content,
-    $._setstart_delimiter_content,
+    $._set_start_delimiter_content,
     $._set_end_delimiter_content,
     $._old_end_delimiter,
     $.text,
@@ -43,6 +43,7 @@ module.exports = grammar({
         $.inverted_section,
         $.interpolation_statement,
         $.set_delimiter_statement,
+        $.partial_statement,
         $.text,
       ),
     interpolation_statement: ($) =>
@@ -55,11 +56,18 @@ module.exports = grammar({
       seq(
         $.start_delimiter,
         "=",
-        $._setstart_delimiter_content,
+        $._set_start_delimiter_content,
         /\s/,
         $._set_end_delimiter_content,
         "=",
         alias($._old_end_delimiter, $.end_delimiter),
+      ),
+    partial_statement: ($) =>
+      seq(
+        $.start_delimiter,
+        ">",
+        alias($._comment_content, $.partial_content),
+        $.end_delimiter,
       ),
 
     section: ($) =>

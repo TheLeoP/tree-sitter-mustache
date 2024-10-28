@@ -82,6 +82,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "partial_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "text"
         }
       ]
@@ -162,7 +166,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_setstart_delimiter_content"
+          "name": "_set_start_delimiter_content"
         },
         {
           "type": "PATTERN",
@@ -184,6 +188,32 @@
           },
           "named": true,
           "value": "end_delimiter"
+        }
+      ]
+    },
+    "partial_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "start_delimiter"
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_comment_content"
+          },
+          "named": true,
+          "value": "partial_content"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_delimiter"
         }
       ]
     },
@@ -415,7 +445,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_setstart_delimiter_content"
+      "name": "_set_start_delimiter_content"
     },
     {
       "type": "SYMBOL",
