@@ -297,14 +297,12 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
     array_push(&content, lexer->lookahead);
     lexer->advance(lexer, false);
   }
-  if (content.size == 0 || lexer->eof(lexer)) {
+  if (content.size == 0) {
     array_delete(&content);
     return false;
   }
 
-  if (scanner->start_delimiter.size > 0) {
-    array_delete(&scanner->start_delimiter);
-  }
+  array_delete(&scanner->start_delimiter);
   scanner->start_delimiter = content;
   lexer->result_symbol = SET_START_DELIMITER_CONTENT;
   return true;
@@ -313,7 +311,7 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
 static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
   String content = array_new();
   while (lexer->lookahead != '=') {
-    if (lexer->eof(lexer) || iswspace(lexer->lookahead)) {
+    if (iswspace(lexer->lookahead) || lexer->eof(lexer)) {
       array_delete(&content);
       return false;
     }
@@ -325,9 +323,7 @@ static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
     return false;
   }
 
-  if (scanner->old_end_delimiter.size > 0) {
-    array_delete(&scanner->old_end_delimiter);
-  }
+  array_delete(&scanner->old_end_delimiter);
   scanner->old_end_delimiter = scanner->end_delimiter;
   scanner->end_delimiter = content;
   lexer->result_symbol = SET_END_DELIMITER_CONTENT;
