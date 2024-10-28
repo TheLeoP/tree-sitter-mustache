@@ -5,6 +5,7 @@
  (section)
 ] @local.scope
 
-(identifier) @local.reference
-
-;TODO: imports with partials
+[
+ (identifier)
+ (partial_content)
+] @local.reference
