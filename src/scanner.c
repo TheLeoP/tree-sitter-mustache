@@ -313,7 +313,7 @@ static bool scan_start_delimiter_content(Scanner *scanner, TSLexer *lexer) {
 static bool scan_end_delimiter_content(Scanner *scanner, TSLexer *lexer) {
   String content = array_new();
   while (lexer->lookahead != '=') {
-    if (lexer->eof(lexer)) {
+    if (lexer->eof(lexer) || iswspace(lexer->lookahead)) {
       array_delete(&content);
       return false;
     }
