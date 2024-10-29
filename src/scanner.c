@@ -348,15 +348,48 @@ static bool scan_old_end_delimiter(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_text(Scanner *scanner, TSLexer *lexer) {
-  int first_start =
-      get_delimiter(scanner->start_delimiter, 0, DEFAULT_START_DELIMITER);
-  int first_end =
-      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
-  while (lexer->lookahead != first_start && lexer->lookahead != first_end) {
-    lexer->advance(lexer, false);
-    if (lexer->eof(lexer)) {
+  // don't increase the size of the token on advance
+  lexer->mark_end(lexer);
+  int start_delimiter_max = scanner->start_delimiter.size == 0
+                                ? DEFAULT_SIZE
+                                : scanner->start_delimiter.size;
+  int end_delimiter_max = scanner->end_delimiter.size == 0
+                              ? DEFAULT_SIZE
+                              : scanner->end_delimiter.size;
+  int start_i = 0;
+  int end_i = 0;
+  while (!lexer->eof(lexer)) {
+    int ith_start = get_delimiter(scanner->start_delimiter, start_i,
+                                  DEFAULT_START_DELIMITER);
+    if (lexer->lookahead == ith_start) {
+      start_i++;
+    } else {
+      for (int i = 0; i < start_i + 1; i++) {
+        // increase the size of the token
+        lexer->mark_end(lexer);
+      }
+      start_i = 0;
+    }
+    if (start_i == start_delimiter_max) {
       break;
     }
+
+    int ith_end =
+        get_delimiter(scanner->end_delimiter, end_i, DEFAULT_END_DELIMITER);
+    if (lexer->lookahead == ith_end) {
+      end_i++;
+    } else {
+      for (int i = 0; i < end_i + 1; i++) {
+        // increase the size of the token
+        lexer->mark_end(lexer);
+      }
+      end_i = 0;
+    }
+    if (end_i == end_delimiter_max) {
+      break;
+    }
+
+    lexer->advance(lexer, false);
   }
   lexer->result_symbol = TEXT;
   return true;
