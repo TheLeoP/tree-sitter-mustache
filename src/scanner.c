@@ -398,6 +398,7 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
         current_size++;
       }
       start_i = 0;
+      end_i = 0;
     }
     if (start_i == start_delimiter_max && current_size > 0)
       break;
