@@ -377,7 +377,7 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
                               : scanner->end_delimiter.size;
   int start_i = 0;
   int end_i = 0;
-  while (!lexer->eof(lexer)) {
+  while (true) {
     int ith_start = get_delimiter(scanner->start_delimiter, start_i,
                                   DEFAULT_START_DELIMITER);
     if (lexer->lookahead == ith_start) {
@@ -389,9 +389,8 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
       }
       start_i = 0;
     }
-    if (start_i == start_delimiter_max) {
+    if (start_i == start_delimiter_max)
       break;
-    }
 
     int ith_end =
         get_delimiter(scanner->end_delimiter, end_i, DEFAULT_END_DELIMITER);
@@ -404,9 +403,11 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
       }
       end_i = 0;
     }
-    if (end_i == end_delimiter_max) {
+    if (end_i == end_delimiter_max)
       break;
-    }
+
+    if (lexer->eof(lexer))
+      break;
 
     lexer->advance(lexer, false);
   }
