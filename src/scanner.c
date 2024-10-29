@@ -110,9 +110,11 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     return size;
   }
   buffer[size++] = (char)start_delimiter_length;
-  strncpy(&buffer[size], scanner->start_delimiter.contents,
-          start_delimiter_length);
-  size += start_delimiter_length;
+  if (start_delimiter_length > 0) {
+    strncpy(&buffer[size], scanner->start_delimiter.contents,
+            start_delimiter_length);
+    size += start_delimiter_length;
+  }
 
   unsigned end_delimiter_length = scanner->end_delimiter.size;
   if (size + 2 + end_delimiter_length >=
@@ -120,8 +122,11 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     return size;
   }
   buffer[size++] = (char)end_delimiter_length;
-  strncpy(&buffer[size], scanner->end_delimiter.contents, end_delimiter_length);
-  size += end_delimiter_length;
+  if (end_delimiter_length > 0) {
+    strncpy(&buffer[size], scanner->end_delimiter.contents,
+            end_delimiter_length);
+    size += end_delimiter_length;
+  }
 
   unsigned old_end_delimiter_length = scanner->old_end_delimiter.size;
   if (size + 2 + old_end_delimiter_length >=
@@ -129,9 +134,11 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     return size;
   }
   buffer[size++] = (char)old_end_delimiter_length;
-  strncpy(&buffer[size], scanner->old_end_delimiter.contents,
-          old_end_delimiter_length);
-  size += old_end_delimiter_length;
+  if (old_end_delimiter_length > 0) {
+    strncpy(&buffer[size], scanner->old_end_delimiter.contents,
+            old_end_delimiter_length);
+    size += old_end_delimiter_length;
+  }
 
   return size;
 }
@@ -175,25 +182,31 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
     }
 
     uint16_t start_delimiter_length = (uint8_t)buffer[size++];
-    array_reserve(&scanner->start_delimiter, start_delimiter_length);
-    scanner->start_delimiter.size = start_delimiter_length;
-    memcpy(scanner->start_delimiter.contents, &buffer[size],
-           start_delimiter_length);
-    size += start_delimiter_length;
+    if (start_delimiter_length > 0) {
+      array_reserve(&scanner->start_delimiter, start_delimiter_length);
+      scanner->start_delimiter.size = start_delimiter_length;
+      memcpy(scanner->start_delimiter.contents, &buffer[size],
+             start_delimiter_length);
+      size += start_delimiter_length;
+    }
 
     uint16_t end_delimiter_length = (uint8_t)buffer[size++];
-    array_reserve(&scanner->end_delimiter, end_delimiter_length);
-    scanner->end_delimiter.size = end_delimiter_length;
-    memcpy(scanner->end_delimiter.contents, &buffer[size],
-           end_delimiter_length);
-    size += end_delimiter_length;
+    if (end_delimiter_length > 0) {
+      array_reserve(&scanner->end_delimiter, end_delimiter_length);
+      scanner->end_delimiter.size = end_delimiter_length;
+      memcpy(scanner->end_delimiter.contents, &buffer[size],
+             end_delimiter_length);
+      size += end_delimiter_length;
+    }
 
     uint16_t old_end_delimiter_length = (uint8_t)buffer[size++];
-    array_reserve(&scanner->old_end_delimiter, old_end_delimiter_length);
-    scanner->old_end_delimiter.size = old_end_delimiter_length;
-    memcpy(scanner->old_end_delimiter.contents, &buffer[size],
-           old_end_delimiter_length);
-    size += old_end_delimiter_length;
+    if (old_end_delimiter_length > 0) {
+      array_reserve(&scanner->old_end_delimiter, old_end_delimiter_length);
+      scanner->old_end_delimiter.size = old_end_delimiter_length;
+      memcpy(scanner->old_end_delimiter.contents, &buffer[size],
+             old_end_delimiter_length);
+      size += old_end_delimiter_length;
+    }
   }
 }
 
