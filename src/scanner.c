@@ -375,41 +375,44 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
   int end_delimiter_max = scanner->end_delimiter.size == 0
                               ? DEFAULT_SIZE
                               : scanner->end_delimiter.size;
+  int current_size = 0;
   int start_i = 0;
   int end_i = 0;
   while (true) {
     int ith_start = get_delimiter(scanner->start_delimiter, start_i,
                                   DEFAULT_START_DELIMITER);
+    int ith_end =
+        get_delimiter(scanner->end_delimiter, end_i, DEFAULT_END_DELIMITER);
+
     if (lexer->lookahead == ith_start) {
       start_i++;
+      lexer->advance(lexer, false);
+    } else if (lexer->lookahead == ith_end) {
+      end_i++;
+      lexer->advance(lexer, false);
     } else {
-      for (int i = 0; i < start_i + 1; i++) {
-        // increase the size of the token
+      lexer->advance(lexer, false);
+      int limit = start_i > 0 ? start_i : end_i;
+      for (int i = 0; i < limit + 1; i++) {
         lexer->mark_end(lexer);
+        current_size++;
       }
       start_i = 0;
     }
-    if (start_i == start_delimiter_max)
+    if (start_i == start_delimiter_max && current_size > 0)
       break;
+    else if (start_i == start_delimiter_max && current_size == 0)
+      return false;
 
-    int ith_end =
-        get_delimiter(scanner->end_delimiter, end_i, DEFAULT_END_DELIMITER);
-    if (lexer->lookahead == ith_end) {
-      end_i++;
-    } else {
-      for (int i = 0; i < end_i + 1; i++) {
-        // increase the size of the token
-        lexer->mark_end(lexer);
-      }
-      end_i = 0;
-    }
-    if (end_i == end_delimiter_max)
+    if (end_i == end_delimiter_max && current_size > 0)
       break;
+    else if (start_i == end_delimiter_max && current_size == 0)
+      return false;
 
-    if (lexer->eof(lexer))
+    if (lexer->eof(lexer) && current_size > 0)
       break;
-
-    lexer->advance(lexer, false);
+    else if (lexer->eof(lexer) && current_size == 0)
+      return false;
   }
   lexer->result_symbol = TEXT;
   return true;
