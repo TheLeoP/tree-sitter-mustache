@@ -1,4 +1,4 @@
 [
- (inverted_section)
- (section)
+  (inverted_section)
+  (section)
 ] @fold
