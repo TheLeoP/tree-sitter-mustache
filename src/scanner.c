@@ -70,6 +70,9 @@ static String scan_tag_name(Scanner *scanner, TSLexer *lexer) {
   String tag_name = array_new();
   char first = get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
   while (lexer->lookahead != first && !lexer->eof(lexer)) {
+    if (iswspace(lexer->lookahead))
+      break;
+
     array_push(&tag_name, lexer->lookahead);
     lexer->advance(lexer, false);
   }
@@ -281,6 +284,9 @@ static bool scan_identifier_content(Scanner *scanner, TSLexer *lexer) {
   while (lexer->lookahead != first_end && lexer->lookahead != '.') {
     if (lexer->eof(lexer))
       return false;
+    if (iswspace(lexer->lookahead))
+      break;
+
     lexer->advance(lexer, false);
   }
   lexer->result_symbol = IDENTIFIER_CONTENT;
