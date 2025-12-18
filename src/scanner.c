@@ -84,13 +84,13 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
       scanner->tags.size > UINT16_MAX ? UINT16_MAX : scanner->tags.size;
   uint16_t serialized_tag_count = 0;
 
-  unsigned size = sizeof(tag_count);
+  unsigned size = sizeof(serialized_tag_count);
   memcpy(&buffer[size], &tag_count, sizeof(tag_count));
   size += sizeof(tag_count);
 
   for (; serialized_tag_count < tag_count; serialized_tag_count++) {
     Tag tag = scanner->tags.contents[serialized_tag_count];
-    unsigned name_length = tag.tag_name.size;
+    uint32_t name_length = tag.tag_name.size;
     if (name_length > UINT8_MAX) {
       name_length = UINT8_MAX;
     }
@@ -104,10 +104,13 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
 
   memcpy(&buffer[0], &serialized_tag_count, sizeof(serialized_tag_count));
 
-  unsigned start_delimiter_length = scanner->start_delimiter.size;
+  uint32_t start_delimiter_length = scanner->start_delimiter.size;
   if (size + 2 + start_delimiter_length >=
       TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
     return size;
+  }
+  if (start_delimiter_length > UINT8_MAX) {
+    start_delimiter_length = UINT8_MAX;
   }
   buffer[size++] = (char)start_delimiter_length;
   if (start_delimiter_length > 0) {
@@ -116,10 +119,13 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     size += start_delimiter_length;
   }
 
-  unsigned end_delimiter_length = scanner->end_delimiter.size;
+  uint32_t end_delimiter_length = scanner->end_delimiter.size;
   if (size + 2 + end_delimiter_length >=
       TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
     return size;
+  }
+  if (end_delimiter_length > UINT8_MAX) {
+    end_delimiter_length = UINT8_MAX;
   }
   buffer[size++] = (char)end_delimiter_length;
   if (end_delimiter_length > 0) {
@@ -128,10 +134,13 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     size += end_delimiter_length;
   }
 
-  unsigned old_end_delimiter_length = scanner->old_end_delimiter.size;
+  uint32_t old_end_delimiter_length = scanner->old_end_delimiter.size;
   if (size + 2 + old_end_delimiter_length >=
       TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
     return size;
+  }
+  if (old_end_delimiter_length > UINT8_MAX) {
+    old_end_delimiter_length = UINT8_MAX;
   }
   buffer[size++] = (char)old_end_delimiter_length;
   if (old_end_delimiter_length > 0) {
@@ -144,69 +153,71 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
 }
 
 static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
-  for (unsigned i = 0; i < scanner->tags.size; i++) {
+  for (uint32_t i = 0; i < scanner->tags.size; i++) {
     tag_free(&scanner->tags.contents[i]);
   }
   array_clear(&scanner->tags);
   array_clear(&scanner->start_delimiter);
   array_clear(&scanner->end_delimiter);
 
-  if (length > 0) {
-    unsigned size = 0;
-    uint16_t tag_count = 0;
-    uint16_t serialized_tag_count = 0;
+  if (length <= 0) {
+    return;
+  }
 
-    memcpy(&serialized_tag_count, &buffer[size], sizeof(serialized_tag_count));
-    size += sizeof(serialized_tag_count);
+  unsigned size = 0;
+  uint16_t tag_count = 0;
+  uint16_t serialized_tag_count = 0;
 
-    memcpy(&tag_count, &buffer[size], sizeof(tag_count));
-    size += sizeof(tag_count);
+  memcpy(&serialized_tag_count, &buffer[size], sizeof(serialized_tag_count));
+  size += sizeof(serialized_tag_count);
 
-    array_reserve(&scanner->tags, tag_count);
-    if (tag_count > 0) {
-      unsigned iter = 0;
-      for (iter = 0; iter < serialized_tag_count; iter++) {
-        Tag tag = tag_new();
-        uint16_t name_length = (uint8_t)buffer[size++];
-        array_reserve(&tag.tag_name, name_length);
-        tag.tag_name.size = name_length;
-        memcpy(tag.tag_name.contents, &buffer[size], name_length);
-        size += name_length;
-        array_push(&scanner->tags, tag);
-      }
-      // add zero tags if we didn't read enough, this is because the
-      // buffer had no more room but we held more tags.
-      for (; iter < tag_count; iter++) {
-        array_push(&scanner->tags, tag_new());
-      }
+  memcpy(&tag_count, &buffer[size], sizeof(tag_count));
+  size += sizeof(tag_count);
+
+  array_reserve(&scanner->tags, tag_count);
+  if (tag_count > 0) {
+    unsigned iter = 0;
+    for (iter = 0; iter < serialized_tag_count; iter++) {
+      Tag tag = tag_new();
+      uint16_t name_length = (uint8_t)buffer[size++];
+      array_reserve(&tag.tag_name, name_length);
+      tag.tag_name.size = name_length;
+      memcpy(tag.tag_name.contents, &buffer[size], name_length);
+      size += name_length;
+      array_push(&scanner->tags, tag);
     }
-
-    uint16_t start_delimiter_length = (uint8_t)buffer[size++];
-    if (start_delimiter_length > 0) {
-      array_reserve(&scanner->start_delimiter, start_delimiter_length);
-      scanner->start_delimiter.size = start_delimiter_length;
-      memcpy(scanner->start_delimiter.contents, &buffer[size],
-             start_delimiter_length);
-      size += start_delimiter_length;
+    // add zero tags if we didn't read enough, this is because the
+    // buffer had no more room but we held more tags.
+    for (; iter < tag_count; iter++) {
+      array_push(&scanner->tags, tag_new());
     }
+  }
 
-    uint16_t end_delimiter_length = (uint8_t)buffer[size++];
-    if (end_delimiter_length > 0) {
-      array_reserve(&scanner->end_delimiter, end_delimiter_length);
-      scanner->end_delimiter.size = end_delimiter_length;
-      memcpy(scanner->end_delimiter.contents, &buffer[size],
-             end_delimiter_length);
-      size += end_delimiter_length;
-    }
+  uint16_t start_delimiter_length = (uint8_t)buffer[size++];
+  if (start_delimiter_length > 0) {
+    array_reserve(&scanner->start_delimiter, start_delimiter_length);
+    scanner->start_delimiter.size = start_delimiter_length;
+    memcpy(scanner->start_delimiter.contents, &buffer[size],
+           start_delimiter_length);
+    size += start_delimiter_length;
+  }
 
-    uint16_t old_end_delimiter_length = (uint8_t)buffer[size++];
-    if (old_end_delimiter_length > 0) {
-      array_reserve(&scanner->old_end_delimiter, old_end_delimiter_length);
-      scanner->old_end_delimiter.size = old_end_delimiter_length;
-      memcpy(scanner->old_end_delimiter.contents, &buffer[size],
-             old_end_delimiter_length);
-      size += old_end_delimiter_length;
-    }
+  uint16_t end_delimiter_length = (uint8_t)buffer[size++];
+  if (end_delimiter_length > 0) {
+    array_reserve(&scanner->end_delimiter, end_delimiter_length);
+    scanner->end_delimiter.size = end_delimiter_length;
+    memcpy(scanner->end_delimiter.contents, &buffer[size],
+           end_delimiter_length);
+    size += end_delimiter_length;
+  }
+
+  uint16_t old_end_delimiter_length = (uint8_t)buffer[size++];
+  if (old_end_delimiter_length > 0) {
+    array_reserve(&scanner->old_end_delimiter, old_end_delimiter_length);
+    scanner->old_end_delimiter.size = old_end_delimiter_length;
+    memcpy(scanner->old_end_delimiter.contents, &buffer[size],
+           old_end_delimiter_length);
+    size += old_end_delimiter_length;
   }
 }
 
