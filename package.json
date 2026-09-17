@@ -2,6 +2,7 @@
   "name": "tree-sitter-mustache",
   "version": "0.1.0",
   "description": "Mustache grammar for tree-sitter",
+  "type": "module",
   "repository": "github:tree-sitter/tree-sitter-mustache",
   "license": "MIT",
   "author": {
