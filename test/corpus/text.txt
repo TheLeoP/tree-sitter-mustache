@@ -49,3 +49,40 @@ End
       (tag_name)
       (end_delimiter)))
   (text))
+
+========
+One char
+========
+
+H
+
+---
+
+(template
+  (text))
+
+========
+Empty document
+========
+
+
+
+---
+
+(template)
+
+========
+Partial overlapping open delimiter
+========
+
+Some text { {{template}} }
+
+---
+
+(template
+  (text)
+  (interpolation_statement
+    (start_delimiter)
+    (identifier)
+    (end_delimiter))
+  (text))

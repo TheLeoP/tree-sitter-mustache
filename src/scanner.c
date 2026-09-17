@@ -303,17 +303,37 @@ static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
-  int first_end =
-      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
-  while (lexer->lookahead != first_end) {
-    if (lexer->eof(lexer))
-      return false;
-    lexer->advance(lexer, false);
-  }
   lexer->mark_end(lexer);
+  int end_delimiter_max = scanner->end_delimiter.size == 0
+                              ? DEFAULT_SIZE
+                              : scanner->end_delimiter.size;
+  int current_size = 0;
+  int end_i = 0;
+  while (true) {
+    int ith_end =
+        get_delimiter(scanner->end_delimiter, end_i, DEFAULT_END_DELIMITER);
 
-  if (!is_end_delimiter(scanner, lexer)) {
-    lexer->mark_end(lexer);
+    if (lexer->lookahead == ith_end) {
+      end_i++;
+      lexer->advance(lexer, false);
+    } else {
+      lexer->advance(lexer, false);
+      for (int i = 0; i < end_i + 1; i++) {
+        lexer->mark_end(lexer);
+        current_size++;
+      }
+      end_i = 0;
+    }
+
+    if (end_i == end_delimiter_max && current_size > 0)
+      break;
+    else if (end_i == end_delimiter_max && current_size == 0)
+      return false;
+
+    if (lexer->eof(lexer) && current_size > 0)
+      break;
+    else if (lexer->eof(lexer) && current_size == 0)
+      return false;
   }
 
   lexer->result_symbol = COMMENT_CONTENT;
@@ -397,7 +417,6 @@ static bool scan_old_end_delimiter(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan_text(Scanner *scanner, TSLexer *lexer) {
-  // don't increase the size of the token on advance
   lexer->mark_end(lexer);
   int start_delimiter_max = scanner->start_delimiter.size == 0
                                 ? DEFAULT_SIZE
@@ -437,7 +456,7 @@ static bool scan_text(Scanner *scanner, TSLexer *lexer) {
 
     if (end_i == end_delimiter_max && current_size > 0)
       break;
-    else if (start_i == end_delimiter_max && current_size == 0)
+    else if (end_i == end_delimiter_max && current_size == 0)
       return false;
 
     if (lexer->eof(lexer) && current_size > 0)
@@ -487,8 +506,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     return scan_old_end_delimiter(scanner, lexer);
   }
 
-  if (valid_symbols[TEXT] && !lexer->eof(lexer) &&
-      lexer->lookahead != first_start && lexer->lookahead != first_end) {
+  if (valid_symbols[TEXT] && !lexer->eof(lexer)) {
     return scan_text(scanner, lexer);
   }
 

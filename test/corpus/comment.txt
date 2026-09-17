@@ -27,7 +27,7 @@ Comment}}
     (_end_delimiter)))
 
 ========
-Partial delimiter inside comment
+Partial end delimiter inside comment
 ========
 
 {{!
@@ -43,3 +43,40 @@ Some text
   (comment_statement
     (_start_delimiter)
     (_end_delimiter)))
+
+========
+Partial end delimiter inside comment before more text
+========
+
+{{!
+Some text
+{
+  "some": "json"
+}
+Some more text
+}}
+
+---
+
+(template
+  (comment_statement
+    (_start_delimiter)
+    (_end_delimiter)))
+
+========
+Partial end delimiter overlapping with end delimiter
+========
+
+{{!
+Some text
+{
+  "some": "json"
+}}}
+
+---
+
+(template
+  (comment_statement
+    (_start_delimiter)
+    (_end_delimiter))
+    (text))
