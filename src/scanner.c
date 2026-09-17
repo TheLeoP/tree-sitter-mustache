@@ -273,11 +273,15 @@ static bool scan_start_delimiter(Scanner *scanner, TSLexer *lexer) {
   return true;
 }
 
-static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
+// TODO: I should probably use this in other `scan_` functions instead of
+// simply checking only for the first character of an end_delimiter. Do I need
+// to do something similar for start_delimiter?
+static bool is_end_delimiter(Scanner *scanner, TSLexer *lexer) {
   int end_delimiter_max = scanner->end_delimiter.size == 0
                               ? DEFAULT_SIZE
                               : scanner->end_delimiter.size;
-  for (int i = 0; i < end_delimiter_max; i++) {
+  int i = 0;
+  for (; i < end_delimiter_max; i++) {
     int current_delimiter =
         get_delimiter(scanner->end_delimiter, i, DEFAULT_END_DELIMITER);
     if (lexer->lookahead != current_delimiter) {
@@ -286,17 +290,32 @@ static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
     lexer->advance(lexer, false);
   }
 
+  return true;
+}
+
+static bool scan_end_delimiter(Scanner *scanner, TSLexer *lexer) {
+  if (!is_end_delimiter(scanner, lexer)) {
+    return false;
+  }
+
   lexer->result_symbol = END_DELIMITER;
   return true;
 }
 
 static bool scan_comment_content(Scanner *scanner, TSLexer *lexer) {
-  int first = get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
-  while (lexer->lookahead != first) {
+  int first_end =
+      get_delimiter(scanner->end_delimiter, 0, DEFAULT_END_DELIMITER);
+  while (lexer->lookahead != first_end) {
     if (lexer->eof(lexer))
       return false;
     lexer->advance(lexer, false);
   }
+  lexer->mark_end(lexer);
+
+  if (!is_end_delimiter(scanner, lexer)) {
+    lexer->mark_end(lexer);
+  }
+
   lexer->result_symbol = COMMENT_CONTENT;
   return true;
 }

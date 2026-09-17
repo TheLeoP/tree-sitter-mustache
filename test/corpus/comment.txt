@@ -25,3 +25,21 @@ Comment}}
   (comment_statement
     (_start_delimiter)
     (_end_delimiter)))
+
+========
+Partial delimiter inside comment
+========
+
+{{!
+Some text
+{
+  "some": "json"
+}
+}}
+
+---
+
+(template
+  (comment_statement
+    (_start_delimiter)
+    (_end_delimiter)))
